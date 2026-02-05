@@ -12,3 +12,6 @@ class SocialPlatformApp(App):
         sm = ScreenManager()
         sm.add_widget(FeedScreen(name="feed"))
         return sm
+
+
+SocialPlatformApp().run()
