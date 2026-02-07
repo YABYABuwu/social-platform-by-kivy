@@ -1,0 +1,45 @@
+<RootLayout>:
+        orientation: 'vertical'
+
+    ScreenManager:
+        id: screen_manager
+        # Define which screens exist
+        FeedScreen:
+                name: 'feed'
+        ProfileScreen:
+                name: 'profile'
+        FindFreindScreen:
+                name: 'friend'
+
+    BoxLayout:
+        size_hint_y: None
+        height: '60dp' 
+        
+        canvas.before:
+            Color:
+                rgba: 0.2, 0.2, 0.2, 1 
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Nav Button 1
+        Button:
+            text: 'Home'
+            background_normal: ''
+            # Change color if this is the active screen
+            background_color: (0, 0.6, 1, 1) if screen_manager.current == 'feed' else (0.3, 0.3, 0.3, 1)
+            on_release: screen_manager.current = 'feed'
+
+        # Nav Button 2
+        Button:
+            text: 'Friend'
+            background_normal: ''
+            background_color: (0, 0.6, 1, 1) if screen_manager.current == 'friend' else (0.3, 0.3, 0.3, 1)
+            on_release: screen_manager.current = 'friend'
+
+        # Nav Button 3
+        Button:
+            text: 'Profile'
+            background_normal: ''
+            background_color: (0, 0.6, 1, 1) if screen_manager.current == 'profile' else (0.3, 0.3, 0.3, 1)
+            on_release: screen_manager.current = 'profile'
