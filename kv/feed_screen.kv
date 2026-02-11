@@ -1,5 +1,67 @@
+# 1. นิยามหน้าตาของ PostCard (เหมือนเดิม)
+<PostCard>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: "140dp"
+    padding: "10dp"
+    spacing: "5dp"
+    canvas.before:
+        Color:
+            rgba: 0.9, 0.9, 0.9, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10,]
+
+    Label:
+        text: root.username
+        color: 0, 0, 0, 1
+        bold: True
+        size_hint_y: None
+        height: "30dp"
+        text_size: self.width, None
+        halign: "left"
+
+    Label:
+        text: root.content
+        color: 0.1, 0.1, 0.1, 1
+        text_size: self.width, None
+        halign: "left"
+
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint_y: None
+        height: "40dp"
+        Button:
+            id: like_btn
+            text: "Like"
+            size_hint_x: None
+            width: "70dp"
+            on_release: root.toggle_like()
+        Label:
+            text: root.likes + " Likes"
+            color: 0.4, 0.4, 0.4, 1
+
+# 2. นิยามหน้า FeedScreen (เหลือแค่อันเดียวพอ)
 <FeedScreen>:
     BoxLayout:
         orientation: 'vertical'
+        
+        # ถ้าอยากให้มีคำว่า Home Feed Content ก็ใส่ไว้ข้างบน RecycleView
         Label:
             text: "Home Feed Content"
+            size_hint_y: None
+            height: "50dp"
+            color: 0, 0, 0, 1
+
+        RecycleView:
+            id: feed_rv
+            viewclass: 'PostCard'
+            RecycleBoxLayout:
+                default_size: None, dp(140)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: "10dp"
+                padding: "10dp"
