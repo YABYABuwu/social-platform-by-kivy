@@ -1,67 +1,100 @@
-# 1. นิยามหน้าตาของ PostCard (เหมือนเดิม)
+# 1. นิยามหน้าตาของ PostCard
+
 <PostCard>:
     orientation: "vertical"
     size_hint_y: None
-    height: "140dp"
-    padding: "10dp"
-    spacing: "5dp"
+    # บังคับความสูงขั้นต่ำ + คำนวณตามเนื้อหาจริง
+    height: self.minimum_height
+    padding: "15dp"
+    spacing: "12dp"
     canvas.before:
         Color:
-            rgba: 0.9, 0.9, 0.9, 1
+            rgba: 0.2, 0.2, 0.22, 1
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [10,]
+            radius: [12,]
 
-    Label:
-        text: root.username
-        color: 0, 0, 0, 1
-        bold: True
+    # --- ส่วนที่ 1: Header (ชื่อและเวลา) ---
+    BoxLayout:
+        orientation: "vertical"
         size_hint_y: None
-        height: "30dp"
-        text_size: self.width, None
-        halign: "left"
+        height: "50dp"  # บังคับความสูงส่วนหัวให้ตายตัว ไม่ให้ซ้อนกับเนื้อหา
+        Label:
+            text: root.username
+            bold: True
+            font_size: "16sp"
+            text_size: self.width, None
+            halign: "left"
+        Label:
+            text: root.timestamp
+            font_size: "11sp"
+            color: 0.6, 0.6, 0.6, 1
+            text_size: self.width, None
+            halign: "left"
 
+    # --- ส่วนที่ 2: Content (ข้อความโพสต์) ---
     Label:
         text: root.content
-        color: 0.1, 0.1, 0.1, 1
+        size_hint_y: None
+        # หัวใจสำคัญ: ให้ Label สูงตามตัวอักษรที่วาดออกมาจริง
+        height: self.texture_size[1] + dp(10)
         text_size: self.width, None
         halign: "left"
+        valign: "top"
+        font_size: "14sp"
 
+    # --- ส่วนที่ 3: Image --- 
+    BoxLayout:
+        size_hint_y: None
+        # ล็อกความสูงไว้ก่อนเพื่อเช็กว่า Box ปรากฏไหม
+        height: dp(250) if root.image else 0 
+        opacity: 1 if root.image else 0
+        
+        Image:
+            source: root.image
+            fit_mode: "contain"
+            
+
+    # --- ส่วนที่ 4: Footer (ปุ่ม Like) ---
     BoxLayout:
         orientation: "horizontal"
         size_hint_y: None
         height: "40dp"
         Button:
             id: like_btn
-            text: "Like"
+            text: "👍 Like" if not root.is_liked else "❤️ Liked"
             size_hint_x: None
-            width: "70dp"
+            width: "100dp"
             on_release: root.toggle_like()
         Label:
-            text: root.likes + " Likes"
-            color: 0.4, 0.4, 0.4, 1
+            text: str(int(root.likes)) + " Likes"
+            halign: "right"
+            text_size: self.size
+            valign: "middle"
 
-# 2. นิยามหน้า FeedScreen (เหลือแค่อันเดียวพอ)
+# 2. นิยามหน้า FeedScreen
 <FeedScreen>:
     BoxLayout:
         orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.12, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
         
-        # ถ้าอยากให้มีคำว่า Home Feed Content ก็ใส่ไว้ข้างบน RecycleView
-        Label:
-            text: "Home Feed Content"
-            size_hint_y: None
-            height: "50dp"
-            color: 0, 0, 0, 1
 
-        RecycleView:
-            id: feed_rv
-            viewclass: 'PostCard'
-            RecycleBoxLayout:
-                default_size: None, dp(140)
-                default_size_hint: 1, None
-                size_hint_y: None
-                height: self.minimum_height
-                orientation: 'vertical'
-                spacing: "10dp"
-                padding: "10dp"
+    RecycleView:
+        id: feed_rv
+        viewclass: 'PostCard'
+        RecycleBoxLayout:
+            default_size: None, None
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+            spacing: "20dp"  # เพิ่มระยะห่างระหว่างการ์ด
+            padding: "10dp"
+            # สำคัญมาก: บอกให้ RV คำนวณความสูงใหม่ทุกครั้งที่ข้อมูลเปลี่ยน
+            key_size: 'height'
