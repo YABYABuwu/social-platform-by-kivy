@@ -1,5 +1,81 @@
 <FindFreindScreen>:
     BoxLayout:
         orientation: 'vertical'
-        Label:
-            text: "Freind Screen"
+        TabbedPanel:
+            do_default_tab: False
+            TabbedPanelItem:
+                text: 'Find Friend'
+                BoxLayout:
+                    orientation: 'vertical'
+                    Label:
+                        text: 'Users you can add as friend:'
+                        size_hint_y: None
+                        height: '40dp'
+                    RecycleView:
+                        viewclass: 'FindFriendItem'
+                        data: [{'username': u} for u in root.non_friends] if root.non_friends else []
+                        bar_width: 8
+                        scroll_type: ['bars', 'content']
+                        RecycleBoxLayout:
+                            default_size: None, 40
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                    Label:
+                        text: 'No users to add.'
+                        color: 0.5,0.5,0.5,1
+                        size_hint_y: None
+                        height: '40dp'
+                        opacity: 1 if not root.non_friends else 0
+            TabbedPanelItem:
+                text: 'Friend'
+                BoxLayout:
+                    orientation: 'vertical'
+                    Label:
+                        text: 'Your Friends:'
+                        size_hint_y: None
+                        height: '40dp'
+                    RecycleView:
+                        viewclass: 'FriendItem'
+                        data: [{'username': u} for u in root.friends] if root.friends else []
+                        bar_width: 8
+                        scroll_type: ['bars', 'content']
+                        RecycleBoxLayout:
+                            default_size: None, 40
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                    Label:
+                        text: 'No friends yet.'
+                        color: 0.5,0.5,0.5,1
+                        size_hint_y: None
+                        height: '40dp'
+                        opacity: 1 if not root.friends else 0
+
+<FindFriendItem@BoxLayout>:
+    username: ''
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '40dp'
+    Label:
+        text: root.username
+        size_hint_x: 0.7
+    Button:
+        text: 'Add Friend'
+        size_hint_x: 0.3
+        on_release: app.root.ids.screen_manager.get_screen('friend').add_friend(root.username)
+
+<FriendItem@BoxLayout>:
+    username: ''
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '40dp'
+    Label:
+        text: root.username
+        size_hint_x: 0.7
+    Button:
+        text: 'Unfriend'
+        size_hint_x: 0.3
+        on_release: app.root.ids.screen_manager.get_screen('friend').remove_friend(root.username)
