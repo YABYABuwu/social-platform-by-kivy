@@ -3,7 +3,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty, NumericProperty, BooleanProperty
 from kivy.clock import Clock
 from kivy.app import App
-import os
 
 # แก้ไข Path การ Import ให้ตรงกับโครงสร้างของคุณ
 try:
@@ -47,21 +46,6 @@ class PostCard(BoxLayout):
                     for post in user_info.get("posts", []):
                         if str(post.get("id")) == str(self.post_id):
                             post["likes"] = int(self.likes)
-
-                            # อัปเดตรายการคนที่กดไลค์ (liked_by)
-                            liked_by = post.get("liked_by", []) or []
-                            current_user = manager.data.get("current_user", "You")
-                            if self.is_liked:
-                                if current_user not in liked_by:
-                                    liked_by.append(current_user)
-                            else:
-                                if current_user in liked_by:
-                                    try:
-                                        liked_by.remove(current_user)
-                                    except ValueError:
-                                        pass
-
-                            post["liked_by"] = liked_by
                             manager.save()
                             print(f"Updated likes for post {self.post_id}")
                             return
@@ -76,55 +60,31 @@ class FeedScreen(Screen):
 
     def load_feed_data(self):
         try:
-            # 1. โหลดข้อมูล
+            # 1. โหลดข้อมูลจาก UserManager
             self.manager_instance = UserManager(txt_file="Users/users_data.txt")
             raw_data = self.manager_instance.load()
 
-            # 2. เตรียมข้อมูลเพื่อน
+            # 2. ดึงรายชื่อเพื่อนของ "You" เพื่อจัดลำดับ
             current_user_info = raw_data["users"].get("You", {})
             friends_list = current_user_info.get("friends", [])
 
             friend_posts = []
             other_posts = []
 
-            # --- [ส่วนที่แก้ไข] เปลี่ยนมาจำ "เนื้อหา" แทน "ID" ---
-            seen_content = set()
-            # ------------------------------------------------
-
-            # 3. วนลูปดึงข้อมูล
+            # 3. จัดเตรียมข้อมูลสำหรับ RecycleView
             for user_name, user_info in raw_data["users"].items():
                 if user_name == "You":
-                    continue
+                    continue  # ไม่แสดงโพสต์ตัวเองใน Feed
 
                 for post in user_info.get("posts", []):
-                    # สร้างรหัสตรวจสอบจาก "ชื่อคนโพสต์ + เวลา + ข้อความ"
-                    # .strip() ช่วยตัดช่องว่างส่วนเกินทิ้ง ป้องกันบั๊กวรรคเกิน
-                    content_key = f"{user_name}|{post.get('timestamp', '').strip()}|{post.get('content', '').strip()}"
-
-                    # --- เช็คว่าเนื้อหานี้เคยโชว์ไปหรือยัง ---
-                    if content_key in seen_content:
-                        print(
-                            f"Skipping duplicate post: {content_key}"
-                        )  # ปริ้นท์บอกใน Console ว่าเจอกันซ้ำ
-                        continue
-
-                    # ถ้ายังไม่เคยเจอ ให้จดไว้
-                    seen_content.add(content_key)
-                    # -------------------------------------
-
-                    # Validate image path exists
-                    post_image = post.get("image", "")
-                    if post_image and not os.path.exists(post_image):
-                        post_image = ""  # Clear invalid image path
-
                     post_data = {
                         "post_id": str(post.get("id", "")),
                         "username": user_name,
                         "content": post.get("content", ""),
                         "likes": float(post.get("likes", 0)),
                         "timestamp": post.get("timestamp", ""),
-                        "image": post_image,
-                        "is_liked": False,
+                        "image": post.get("image", ""),
+                        "is_liked": False,  # เริ่มต้นเป็น False (สามารถขยายระบบจำค่า Like ต่อได้)
                     }
 
                     if user_name in friends_list:
@@ -132,10 +92,9 @@ class FeedScreen(Screen):
                     else:
                         other_posts.append(post_data)
 
-            # 4. ส่งเข้าหน้าจอ (ล้างของเก่าอัตโนมัติ)
+            # 4. รวมโพสต์ (เพื่อนก่อน) และส่งให้ UI
             if "feed_rv" in self.ids:
                 self.ids.feed_rv.data = friend_posts + other_posts
-                self.ids.feed_rv.refresh_from_data()  # บังคับให้หน้าจอรีเฟรชทันที
 
         except Exception as e:
             print(f"Error in load_feed_data: {e}")

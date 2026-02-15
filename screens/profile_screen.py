@@ -71,13 +71,14 @@ class ProfileScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.user_data = {
-            "name": "You",
-            "handle": "@yourname",
-            "bio": "My profile",
+            "name": "Tae Tae",
+            "handle": "@t_ttaexd",
+            "bio": "I'm gay",
             "posts": 0,
             "followers": 0,
             "following": 0,
-            "profile_pic": "assets/profile.png",
+            # UPDATED: Pointing to your specific local image
+            "profile_pic": r"D:\University\Kivy App Project\social-platform-by-kivy\Users\images\my_picture.png",
         }
         self.manager_instance = None
         self.data_loaded = False
@@ -92,7 +93,6 @@ class ProfileScreen(Screen):
     def load_profile_data(self):
         """Load profile data from UserManager - builds UI only once with thread safety"""
         with self.data_lock:
-            # Set loading flag to prevent race conditions
             self.is_loading = True
 
         try:
@@ -105,7 +105,10 @@ class ProfileScreen(Screen):
             self.user_data["followers"] = current_user_info.get("followers", 0)
             self.user_data["following"] = len(current_user_info.get("friends", []))
 
-            # Build UI only once with actual data
+            # If you want the profile pic to come from the database instead of hardcoding,
+            # you would uncomment the line below (assuming your text file has this field):
+            # self.user_data["profile_pic"] = current_user_info.get("profile_pic", self.user_data["profile_pic"])
+
             self.build_ui(raw_data)
 
             with self.data_lock:
@@ -114,7 +117,6 @@ class ProfileScreen(Screen):
 
         except Exception as e:
             print(f"Error in load_profile_data: {e}")
-            # Build UI with default data on error
             self.build_ui(None)
             with self.data_lock:
                 self.data_loaded = True
@@ -131,12 +133,12 @@ class ProfileScreen(Screen):
         pic_container = BoxLayout(size_hint_x=0.3)
         profile_pic_source = self.user_data["profile_pic"]
 
-        # Validate image path exists, otherwise use empty/placeholder
+        # Validate image path exists
         if not os.path.exists(profile_pic_source):
-            profile_pic_source = ""
-            print(
-                f"Warning: Profile image not found at {self.user_data['profile_pic']}"
-            )
+            # print warning but keep the path so you can see if Kivy can load it anyway,
+            # or set to empty string if you prefer a blank space.
+            print(f"Warning: Profile image not found at {profile_pic_source}")
+            # profile_pic_source = "" # Uncomment this if you want it to disappear completely on error
 
         profile_img = Image(
             source=profile_pic_source, size_hint=(1, 1), allow_stretch=True
@@ -211,15 +213,13 @@ class ProfileScreen(Screen):
         posts_layout = GridLayout(cols=1, spacing=20, size_hint_y=None, padding=10)
         posts_layout.bind(minimum_height=posts_layout.setter("height"))
 
-        # Load posts from UserManager data or show empty message
         if raw_data:
             current_user_posts = raw_data["users"].get("You", {}).get("posts", [])
             if current_user_posts:
                 for post in current_user_posts:
-                    # Validate post image path
                     post_image = post.get("image", "")
                     if post_image and not os.path.exists(post_image):
-                        post_image = ""  # Clear invalid image path
+                        post_image = ""
 
                     post_widget = PostCard(
                         post_id=str(post.get("id", "")),
@@ -247,5 +247,4 @@ class ProfileScreen(Screen):
         self.add_widget(main_layout)
 
     def edit_profile(self, instance):
-        """Handle edit profile button press"""
-        print("Edit profile clicked - can edit name, bio, etc. but not picture!")
+        print("Edit profile clicked")

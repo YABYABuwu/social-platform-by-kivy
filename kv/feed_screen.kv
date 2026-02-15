@@ -44,32 +44,16 @@
         valign: "top"
         font_size: "14sp"
 
-    # --- ส่วนที่ 3: Image (แก้ใหม่) ---
-    # ใช้ Widget เปล่าๆ ครอบ Image ไว้ ถ้าไม่มีรูปก็ยุบ Widget นี้ทิ้งเลย
+    # --- ส่วนที่ 3: Image --- 
     BoxLayout:
-        orientation: "vertical"
         size_hint_y: None
-        # ถ้ามีรูป สูง 250dp ถ้าไม่มี สูง 0dp
-        height: "250dp" if root.image else "0dp"
+        # ล็อกความสูงไว้ก่อนเพื่อเช็กว่า Box ปรากฏไหม
+        height: dp(250) if root.image else 0 
         opacity: 1 if root.image else 0
         
-        # ป้องกันการกินพื้นที่ถ้าไม่มีรูป
-        size_hint_y: None if root.image else None
-        
-        canvas.before:
-            Color:
-                rgba: 0.15, 0.15, 0.17, 1
-            # วาดสี่เหลี่ยมรองรูปเฉพาะตอนมีรูป
-            Rectangle:
-                pos: self.pos
-                size: self.size if root.image else (0,0)
-
         Image:
-            source: root.image if root.image else ""
+            source: root.image
             fit_mode: "contain"
-            allow_stretch: True
-            # ถ้าไม่มีรูป ก็ไม่ต้องเสียเวลา render
-            nocache: True
             
 
     # --- ส่วนที่ 4: Footer (ปุ่ม Like) ---
