@@ -13,7 +13,8 @@
                         height: '40dp'
                     RecycleView:
                         viewclass: 'FindFriendItem'
-                        data: [{'username': u} for u in root.non_friends] if root.non_friends else []
+                        # โหลดรายชื่อผู้ใช้ที่ไม่ใช่เพื่อนจาก root.non_friends และสร้างข้อมูลสำหรับ RecycleView
+                        data: [{'username': u} for u in root.non_friends] if root.non_friends else [] 
                         bar_width: 8
                         scroll_type: ['bars', 'content']
                         RecycleBoxLayout:
@@ -38,6 +39,7 @@
                         height: '40dp'
                     RecycleView:
                         viewclass: 'FriendItem'
+                        # โหลดรายชื่อเพื่อนจาก root.friends และสร้างข้อมูลสำหรับ RecycleView
                         data: [{'username': u} for u in root.friends] if root.friends else []
                         bar_width: 8
                         scroll_type: ['bars', 'content']
@@ -54,6 +56,7 @@
                         height: '40dp'
                         opacity: 1 if not root.friends else 0
 
+#สำหรับแสดงรายการผู้ใช้ที่ไม่ใช่เพื่อนและปุ่มเพิ่มเพื่อน
 <FindFriendItem@BoxLayout>:
     username: ''
     orientation: 'horizontal'
