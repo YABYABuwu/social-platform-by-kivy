@@ -74,8 +74,8 @@ class ProfileScreen(Screen):  # คลาสหลักสำหรับหน
         super().__init__(**kwargs)
         # ข้อมูลผู้ใช้เริ่มต้น (จะถูกเขียนทับด้วยข้อมูลจริง)
         self.user_data = {
-            "name": "Tae Tae",
-            "handle": "@t_ttaexd",
+            "name": "Chanathip Nuisee",
+            "handle": "@boss_20060902",
             "bio": "I'm gay.",
             "posts": 0,
             "followers": 0,
