@@ -6,7 +6,7 @@ id=0
 name=You
 profile_pic=👤
 bio=Updated bio
-friends=John Doe|Sarah Connor|James Bond|Test Friend
+friends=Test Friend|James Bond|Peter Parker|John Doe|Sarah Connor|Lara Croft
 [/USER]
 
 [POSTS_YOU]
@@ -80,5 +80,4 @@ friends=John Doe
 [POSTS_PETER_PARKER]
 [2024-02-13 13:15] New photography portfolio is live! Check it out 📸 |likes:41|liked_by:John Doe|image:Users/images/portfolio_cover.png
 [2024-02-11 10:45] Web development tips: Always test on multiple devices! |likes:73|liked_by:|image:Users/images/responsive_design.png
-
 [/POSTS_PETER_PARKER]

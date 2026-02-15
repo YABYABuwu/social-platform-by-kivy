@@ -1,5 +1,78 @@
-<ProfileScreen>:
+<PostCard>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: self.minimum_height
+    padding: "15dp"
+    spacing: "12dp"
+    canvas.before:
+        Color:
+            rgba: 0.2, 0.2, 0.22, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [12,]
+
+    # --- Header (username and timestamp) ---
     BoxLayout:
-        orientation: 'vertical'
+        orientation: "vertical"
+        size_hint_y: None
+        height: "50dp"
         Label:
-            text: "Profile Screen"
+            text: root.username
+            bold: True
+            font_size: "16sp"
+            text_size: self.width, None
+            halign: "left"
+        Label:
+            text: root.timestamp
+            font_size: "11sp"
+            color: 0.6, 0.6, 0.6, 1
+            text_size: self.width, None
+            halign: "left"
+
+    # --- Content (post text) ---
+    Label:
+        text: root.content
+        size_hint_y: None
+        height: self.texture_size[1] + dp(10)
+        text_size: self.width, None
+        halign: "left"
+        valign: "top"
+        font_size: "14sp"
+
+    # --- Image (if exists) ---
+    BoxLayout:
+        size_hint_y: None
+        height: dp(250) if root.image else 0
+        opacity: 1 if root.image else 0
+        
+        canvas.before:
+            Color:
+                rgba: 0.15, 0.15, 0.17, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size if root.image else (0, 0)
+        
+        Image:
+            source: root.image if root.image else ""
+            fit_mode: "contain"
+            allow_stretch: True
+
+    # --- Footer (Like button) ---
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint_y: None
+        height: "40dp"
+        Button:
+            id: like_btn
+            text: "👍 Like" if not root.is_liked else "❤️ Liked"
+            size_hint_x: None
+            width: "100dp"
+            on_release: root.toggle_like()
+        Label:
+            text: str(int(root.likes)) + " Likes"
+            halign: "right"
+            text_size: self.size
+            valign: "middle"
+
+<ProfileScreen>:

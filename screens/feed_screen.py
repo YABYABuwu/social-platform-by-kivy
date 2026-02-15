@@ -56,7 +56,7 @@ class PostCard(BoxLayout):
 class FeedScreen(Screen):
     def on_enter(self):
         # โหลดข้อมูลทุกครั้งที่เข้าหน้า Feed
-        Clock.schedule_once(lambda dt: self.load_feed_data(),0.2)
+        Clock.schedule_once(lambda dt: self.load_feed_data(), 0.2)
 
     def load_feed_data(self):
         try:
