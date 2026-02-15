@@ -16,22 +16,9 @@ friends=Test Friend|James Bond|Peter Parker|John Doe|Sarah Connor|Lara Croft
 [2024-02-11 09:15] Working on something cool with Kivy framework! |likes:15|liked_by:
 [/POSTS_YOU]
 
+
 [USER]
 id=1
-name=John Doe
-profile_pic=👨
-bio=Coffee enthusiast and tech lover
-friends=You|Sarah Connor|Peter Parker
-[/USER]
-
-[POSTS_JOHN_DOE]
-[2024-02-13 08:00] Just finished a 5k run! Feeling energized 💪 |likes:32|liked_by:You,Sarah Connor|image:Users/images/run_tracker.png
-[2024-02-12 14:20] Anyone have coffee recommendations? Need something new ☕ |likes:18|liked_by:You
-[2024-02-10 19:00] Code review completed. Time to relax! |likes:22|liked_by:
-[/POSTS_JOHN_DOE]
-
-[USER]
-id=2
 name=Sarah Connor
 profile_pic=👩
 bio=Always ready for the next challenge
@@ -44,7 +31,7 @@ friends=You|John Doe|Lara Croft
 [/POSTS_SARAH_CONNOR]
 
 [USER]
-id=3
+id=2
 name=James Bond
 profile_pic=🕵️
 bio=Agent. Adventurer. Movie fan.
@@ -57,7 +44,7 @@ friends=You|Lara Croft
 [/POSTS_JAMES_BOND]
 
 [USER]
-id=4
+id=3
 name=Lara Croft
 profile_pic=🧗
 bio=Explorer and archaeologist
@@ -70,7 +57,7 @@ friends=Sarah Connor|James Bond
 [/POSTS_LARA_CROFT]
 
 [USER]
-id=5
+id=4
 name=Peter Parker
 profile_pic=🕷️
 bio=Photographer and web developer
