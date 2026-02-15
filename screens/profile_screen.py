@@ -81,7 +81,7 @@ class ProfileScreen(Screen):  # คลาสหลักสำหรับหน
             "followers": 0,
             "following": 0,
             # อัปเดต: ชี้ไปยัง path รูปภาพในเครื่องของคุณ
-            "profile_pic": r"D:\University\Kivy App Project\social-platform-by-kivy\Users\images\my_picture.png",
+            "profile_pic": r"Users\images\my_picture.png",
         }
         self.manager_instance = None  # instance ของ UserManager
         self.data_loaded = False  # Flag เพื่อตรวจสอบว่าโหลดข้อมูลแล้วหรือยัง
