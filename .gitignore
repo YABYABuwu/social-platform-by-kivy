@@ -1,3 +1,7 @@
+# ไฟล์ขยะจาก Code Runner
+**/tempCodeRunnerFile.py
+tempCodeRunnerFile.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
