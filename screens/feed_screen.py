@@ -47,6 +47,21 @@ class PostCard(BoxLayout):
                     for post in user_info.get("posts", []):
                         if str(post.get("id")) == str(self.post_id):
                             post["likes"] = int(self.likes)
+
+                            # อัปเดตรายการคนที่กดไลค์ (liked_by)
+                            liked_by = post.get("liked_by", []) or []
+                            current_user = manager.data.get("current_user", "You")
+                            if self.is_liked:
+                                if current_user not in liked_by:
+                                    liked_by.append(current_user)
+                            else:
+                                if current_user in liked_by:
+                                    try:
+                                        liked_by.remove(current_user)
+                                    except ValueError:
+                                        pass
+
+                            post["liked_by"] = liked_by
                             manager.save()
                             print(f"Updated likes for post {self.post_id}")
                             return
