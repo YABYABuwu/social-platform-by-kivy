@@ -176,10 +176,8 @@ class ProfileScreen(Screen):  # คลาสหลักสำหรับหน
 
         bio_label = Label(
             text=self.user_data["bio"],
-            font_size="12sp",
-            size_hint_y=0.5,
-            text_size=(self.width * 0.7, None),
-            valign="top",
+            font_size="20sp",
+            size_hint_y=0.2,
         )
         info_layout.add_widget(bio_label)
 
