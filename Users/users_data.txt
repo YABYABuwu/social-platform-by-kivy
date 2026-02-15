@@ -6,7 +6,7 @@ id=0
 name=You
 profile_pic=👤
 bio=Updated bio
-friends=Test Friend|Peter Parker
+friends=Test Friend|James Bond|Peter Parker|John Doe|Sarah Connor|Lara Croft
 [/USER]
 
 [POSTS_YOU]

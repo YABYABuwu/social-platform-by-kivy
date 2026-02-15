@@ -103,7 +103,11 @@ class ProfileScreen(Screen):
             current_user_info = raw_data["users"].get("You", {})
             self.user_data["posts"] = len(current_user_info.get("posts", []))
             self.user_data["followers"] = current_user_info.get("followers", 0)
-            self.user_data["following"] = len(current_user_info.get("friends", []))
+
+            # To ensure consistency with the friend screen, count only valid users.
+            all_users = set(raw_data["users"].keys())
+            friends = current_user_info.get("friends", [])
+            self.user_data["following"] = len([f for f in friends if f in all_users])
 
             # If you want the profile pic to come from the database instead of hardcoding,
             # you would uncomment the line below (assuming your text file has this field):
