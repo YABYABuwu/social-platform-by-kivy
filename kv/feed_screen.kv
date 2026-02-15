@@ -1,5 +1,116 @@
+# 1. นิยามหน้าตาของ PostCard
+
+<PostCard>:
+    orientation: "vertical"
+    size_hint_y: None
+    # บังคับความสูงขั้นต่ำ + คำนวณตามเนื้อหาจริง
+    height: self.minimum_height
+    padding: "15dp"
+    spacing: "12dp"
+    canvas.before:
+        Color:
+            rgba: 0.2, 0.2, 0.22, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [12,]
+
+    # --- ส่วนที่ 1: Header (ชื่อและเวลา) ---
+    BoxLayout:
+        orientation: "vertical"
+        size_hint_y: None
+        height: "50dp"  # บังคับความสูงส่วนหัวให้ตายตัว ไม่ให้ซ้อนกับเนื้อหา
+        Label:
+            text: root.username
+            bold: True
+            font_size: "16sp"
+            text_size: self.width, None
+            halign: "left"
+        Label:
+            text: root.timestamp
+            font_size: "11sp"
+            color: 0.6, 0.6, 0.6, 1
+            text_size: self.width, None
+            halign: "left"
+
+    # --- ส่วนที่ 2: Content (ข้อความโพสต์) ---
+    Label:
+        text: root.content
+        size_hint_y: None
+        # หัวใจสำคัญ: ให้ Label สูงตามตัวอักษรที่วาดออกมาจริง
+        height: self.texture_size[1] + dp(10)
+        text_size: self.width, None
+        halign: "left"
+        valign: "top"
+        font_size: "14sp"
+
+    # --- ส่วนที่ 3: Image (แก้ใหม่) ---
+    # ใช้ Widget เปล่าๆ ครอบ Image ไว้ ถ้าไม่มีรูปก็ยุบ Widget นี้ทิ้งเลย
+    BoxLayout:
+        orientation: "vertical"
+        size_hint_y: None
+        # ถ้ามีรูป สูง 250dp ถ้าไม่มี สูง 0dp
+        height: "250dp" if root.image else "0dp"
+        opacity: 1 if root.image else 0
+        
+        # ป้องกันการกินพื้นที่ถ้าไม่มีรูป
+        size_hint_y: None if root.image else None
+        
+        canvas.before:
+            Color:
+                rgba: 0.15, 0.15, 0.17, 1
+            # วาดสี่เหลี่ยมรองรูปเฉพาะตอนมีรูป
+            Rectangle:
+                pos: self.pos
+                size: self.size if root.image else (0,0)
+
+        Image:
+            source: root.image if root.image else ""
+            fit_mode: "contain"
+            allow_stretch: True
+            # ถ้าไม่มีรูป ก็ไม่ต้องเสียเวลา render
+            nocache: True
+            
+
+    # --- ส่วนที่ 4: Footer (ปุ่ม Like) ---
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint_y: None
+        height: "40dp"
+        Button:
+            id: like_btn
+            text: "👍 Like" if not root.is_liked else "❤️ Liked"
+            size_hint_x: None
+            width: "100dp"
+            on_release: root.toggle_like()
+        Label:
+            text: str(int(root.likes)) + " Likes"
+            halign: "right"
+            text_size: self.size
+            valign: "middle"
+
+# 2. นิยามหน้า FeedScreen
 <FeedScreen>:
     BoxLayout:
         orientation: 'vertical'
-        Label:
-            text: "Home Feed Content"
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.12, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        
+
+    RecycleView:
+        id: feed_rv
+        viewclass: 'PostCard'
+        RecycleBoxLayout:
+            default_size: None, None
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+            spacing: "20dp"  # เพิ่มระยะห่างระหว่างการ์ด
+            padding: "10dp"
+            # สำคัญมาก: บอกให้ RV คำนวณความสูงใหม่ทุกครั้งที่ข้อมูลเปลี่ยน
+            key_size: 'height'

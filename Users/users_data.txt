@@ -1,0 +1,83 @@
+[SYSTEM]
+current_user=You
+
+[USER]
+id=0
+name=You
+profile_pic=👤
+bio=Updated bio
+friends=Test Friend|Peter Parker
+[/USER]
+
+[POSTS_YOU]
+[2026-02-13 17:17] Amazing sunset! 🌅 |likes:0|liked_by:
+[2024-02-13 10:30] Just launched my new social platform project! Excited to share it with everyone 🚀 |likes:42|liked_by:John Doe,Sarah Connor|image:Users/images/project_screenshot.png
+[2024-02-12 15:45] Beautiful sunset at the beach today 🌅 |likes:28|liked_by:James Bond|image:Users/images/sunset.png
+[2024-02-11 09:15] Working on something cool with Kivy framework! |likes:15|liked_by:
+[/POSTS_YOU]
+
+[USER]
+id=1
+name=John Doe
+profile_pic=👨
+bio=Coffee enthusiast and tech lover
+friends=You|Sarah Connor|Peter Parker
+[/USER]
+
+[POSTS_JOHN_DOE]
+[2024-02-13 08:00] Just finished a 5k run! Feeling energized 💪 |likes:32|liked_by:You,Sarah Connor|image:Users/images/run_tracker.png
+[2024-02-12 14:20] Anyone have coffee recommendations? Need something new ☕ |likes:18|liked_by:You
+[2024-02-10 19:00] Code review completed. Time to relax! |likes:22|liked_by:
+[/POSTS_JOHN_DOE]
+
+[USER]
+id=2
+name=Sarah Connor
+profile_pic=👩
+bio=Always ready for the next challenge
+friends=You|John Doe|Lara Croft
+[/USER]
+
+[POSTS_SARAH_CONNOR]
+[2024-02-13 11:30] Started learning Python! Any tips for beginners? 🐍 |likes:45|liked_by:You,John Doe,James Bond|image:Users/images/python_course.png
+[2024-02-11 16:45] First project deployment! So proud of the team 🎉 |likes:67|liked_by:You,John Doe|image:Users/images/deployment_success.png
+[/POSTS_SARAH_CONNOR]
+
+[USER]
+id=3
+name=James Bond
+profile_pic=🕵️
+bio=Agent. Adventurer. Movie fan.
+friends=You|Lara Croft
+[/USER]
+
+[POSTS_JAMES_BOND]
+[2024-02-13 12:00] Just watched an amazing action movie! 🎬 |likes:38|liked_by:You,Lara Croft
+[2024-02-09 09:30] Time for some adventure! |likes:52|liked_by:
+[/POSTS_JAMES_BOND]
+
+[USER]
+id=4
+name=Lara Croft
+profile_pic=🧗
+bio=Explorer and archaeologist
+friends=Sarah Connor|James Bond
+[/USER]
+
+[POSTS_LARA_CROFT]
+[2024-02-12 07:00] Found an ancient artifact today! 🏺 |likes:89|liked_by:James Bond|image:Users/images/artifact_discovery.png
+[2024-02-08 18:00] Mountain climbing is the best therapy 🏔️ |likes:56|liked_by:|image:Users/images/mountain_peak.png
+[/POSTS_LARA_CROFT]
+
+[USER]
+id=5
+name=Peter Parker
+profile_pic=🕷️
+bio=Photographer and web developer
+friends=John Doe
+[/USER]
+
+[POSTS_PETER_PARKER]
+[2024-02-13 13:15] New photography portfolio is live! Check it out 📸 |likes:41|liked_by:John Doe|image:Users/images/portfolio_cover.png
+[2024-02-11 10:45] Web development tips: Always test on multiple devices! |likes:73|liked_by:|image:Users/images/responsive_design.png
+[/POSTS_PETER_PARKER]

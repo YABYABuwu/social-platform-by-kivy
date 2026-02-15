@@ -6,33 +6,140 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.popup import Popup
+from kivy.properties import StringProperty, NumericProperty, BooleanProperty
+from kivy.uix.recycleview import RecycleView
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.clock import Clock
+from kivy.app import App
+from threading import Lock
+import os
+
+# Import UserManager to load actual user data
+try:
+    from Users.user_manager import UserManager
+except ImportError:
+    from user_manager import UserManager
+
+
+class PostCard(BoxLayout):
+    username = StringProperty()
+    content = StringProperty()
+    likes = NumericProperty(0)
+    timestamp = StringProperty()
+    image = StringProperty("")
+    post_id = StringProperty()
+    is_liked = BooleanProperty(False)
+
+    def toggle_like(self):
+        if self.is_liked:
+            self.likes -= 1
+            self.is_liked = False
+        else:
+            self.likes += 1
+            self.is_liked = True
+
+        # Update likes in the database with thread safety
+        try:
+            app = App.get_running_app()
+            profile_screen = None
+            if hasattr(app.root, "get_screen"):
+                profile_screen = app.root.get_screen("profile")
+
+            if profile_screen and hasattr(profile_screen, "manager_instance"):
+                # Use lock to prevent race conditions
+                if hasattr(profile_screen, "data_lock"):
+                    with profile_screen.data_lock:
+                        # Check if data is still loading
+                        if profile_screen.is_loading:
+                            print("Data still loading, skipping like update")
+                            return
+
+                        manager = profile_screen.manager_instance
+                        if manager:
+                            for user_info in manager.data["users"].values():
+                                for post in user_info.get("posts", []):
+                                    if str(post.get("id")) == str(self.post_id):
+                                        post["likes"] = int(self.likes)
+                                        manager.save()
+                                        print(f"Updated likes for post {self.post_id}")
+                                        return
+        except Exception as e:
+            print(f"Error updating likes: {e}")
 
 
 class ProfileScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.user_data = {
-            "name": "John Doe",
-            "handle": "@johndoe",
-            "bio": "Passionate developer | Coffee enthusiast | Tech lover ☕",
-            "posts": 45,
-            "followers": 1250,
-            "following": 340,
-            "profile_pic": "assets/profile.png",  # Default profile image
+            "name": "You",
+            "handle": "@yourname",
+            "bio": "My profile",
+            "posts": 0,
+            "followers": 0,
+            "following": 0,
+            "profile_pic": "assets/profile.png",
         }
-        self.build_ui()
+        self.manager_instance = None
+        self.data_loaded = False
+        self.is_loading = False
+        self.data_lock = Lock()  # Thread lock for data access
 
-    def build_ui(self):
+    def on_enter(self):
+        # Load data once on first enter only
+        if not self.data_loaded:
+            self.load_profile_data()
+
+    def load_profile_data(self):
+        """Load profile data from UserManager - builds UI only once with thread safety"""
+        with self.data_lock:
+            # Set loading flag to prevent race conditions
+            self.is_loading = True
+
+        try:
+            self.manager_instance = UserManager(txt_file="Users/users_data.txt")
+            raw_data = self.manager_instance.load()
+
+            # Get current user's data (You)
+            current_user_info = raw_data["users"].get("You", {})
+            self.user_data["posts"] = len(current_user_info.get("posts", []))
+            self.user_data["followers"] = current_user_info.get("followers", 0)
+            self.user_data["following"] = len(current_user_info.get("friends", []))
+
+            # Build UI only once with actual data
+            self.build_ui(raw_data)
+
+            with self.data_lock:
+                self.data_loaded = True
+                self.is_loading = False
+
+        except Exception as e:
+            print(f"Error in load_profile_data: {e}")
+            # Build UI with default data on error
+            self.build_ui(None)
+            with self.data_lock:
+                self.data_loaded = True
+                self.is_loading = False
+
+    def build_ui(self, raw_data=None):
         """Build the profile screen UI"""
         main_layout = BoxLayout(orientation="vertical", spacing=10, padding=10)
 
         # Header with profile info
         header = BoxLayout(orientation="horizontal", size_hint_y=0.25, spacing=15)
 
-        # Profile picture (circular)
+        # Profile picture (circular) - with fallback if image not found
         pic_container = BoxLayout(size_hint_x=0.3)
+        profile_pic_source = self.user_data["profile_pic"]
+
+        # Validate image path exists, otherwise use empty/placeholder
+        if not os.path.exists(profile_pic_source):
+            profile_pic_source = ""
+            print(
+                f"Warning: Profile image not found at {self.user_data['profile_pic']}"
+            )
+
         profile_img = Image(
-            source=self.user_data["profile_pic"], size_hint=(1, 1), allow_stretch=True
+            source=profile_pic_source, size_hint=(1, 1), allow_stretch=True
         )
         pic_container.add_widget(profile_img)
         header.add_widget(pic_container)
@@ -101,117 +208,43 @@ class ProfileScreen(Screen):
 
         # Scrollable posts list
         scroll = ScrollView(size_hint=(1, 0.48))
-        posts_layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        posts_layout = GridLayout(cols=1, spacing=20, size_hint_y=None, padding=10)
         posts_layout.bind(minimum_height=posts_layout.setter("height"))
 
-        # Sample posts
-        sample_posts = [
-            ("Just finished a great project! 🚀", "2 hours ago"),
-            ("Coffee and coding 💻☕", "5 hours ago"),
-            ("New blog post about Kivy framework", "1 day ago"),
-            ("Amazing day at the tech conference", "2 days ago"),
-            ("Started learning new programming language", "3 days ago"),
-        ]
+        # Load posts from UserManager data or show empty message
+        if raw_data:
+            current_user_posts = raw_data["users"].get("You", {}).get("posts", [])
+            if current_user_posts:
+                for post in current_user_posts:
+                    # Validate post image path
+                    post_image = post.get("image", "")
+                    if post_image and not os.path.exists(post_image):
+                        post_image = ""  # Clear invalid image path
 
-        for post_text, time_ago in sample_posts:
-            post_widget = self.create_post_widget(post_text, time_ago)
-            posts_layout.add_widget(post_widget)
+                    post_widget = PostCard(
+                        post_id=str(post.get("id", "")),
+                        username="You",
+                        content=post.get("content", ""),
+                        likes=float(post.get("likes", 0)),
+                        timestamp=post.get("timestamp", ""),
+                        image=post_image,
+                        is_liked=False,
+                        size_hint_y=None,
+                        height=250,
+                    )
+                    posts_layout.add_widget(post_widget)
+            else:
+                empty_label = Label(
+                    text="No posts yet. Create your first post!",
+                    font_size="14sp",
+                    color=(0.6, 0.6, 0.6, 1),
+                )
+                posts_layout.add_widget(empty_label)
 
         scroll.add_widget(posts_layout)
         main_layout.add_widget(scroll)
 
         self.add_widget(main_layout)
-
-    def create_post_widget(self, text, time):
-        """Create a complete post widget like Facebook"""
-        import random
-
-        post_box = BoxLayout(
-            orientation="vertical", size_hint_y=None, height=200, spacing=5
-        )
-        post_box.padding = 5
-        post_box.canvas.before.clear()
-
-        # Header: User info and time
-        header = BoxLayout(orientation="horizontal", size_hint_y=0.15, spacing=10)
-
-        # User profile pic (small)
-        user_pic = Image(source="assets/profile.png", size_hint_x=0.1, size_hint_y=1)
-        header.add_widget(user_pic)
-
-        # User name and time
-        info_layout = BoxLayout(orientation="vertical", size_hint_x=0.85, spacing=2)
-        name = Label(
-            text=self.user_data["name"], font_size="12sp", bold=True, size_hint_y=0.5
-        )
-        time_label = Label(
-            text=time, font_size="10sp", color=(0.6, 0.6, 0.6, 1), size_hint_y=0.5
-        )
-        info_layout.add_widget(name)
-        info_layout.add_widget(time_label)
-        header.add_widget(info_layout)
-
-        post_box.add_widget(header)
-
-        # Post text content
-        post_text = Label(
-            text=text,
-            font_size="15sp",
-            size_hint_y=0.2,
-            text_size=(self.width - 10, None),
-            valign="top",
-        )
-        post_box.add_widget(post_text)
-
-        # Engagement stats
-        stats = [random.randint(10, 200), random.randint(2, 50), random.randint(1, 30)]
-
-        stats_label = Label(
-            text=f"👍 {stats[0]} likes  💬 {stats[1]} comments  ↗️ {stats[2]} shares",
-            font_size="10sp",
-            color=(0.6, 0.6, 0.6, 1),
-            size_hint_y=0.15,
-        )
-        post_box.add_widget(stats_label)
-
-        # Action buttons
-        actions = BoxLayout(size_hint_y=0.25, spacing=5)
-
-        like_btn = Button(
-            text="👍 Like", size_hint_x=0.33, background_color=(0.9, 0.9, 0.9, 1)
-        )
-        like_btn.bind(on_press=lambda x: self.like_post(text))
-        actions.add_widget(like_btn)
-
-        comment_btn = Button(
-            text="💬 Comment", size_hint_x=0.33, background_color=(0.9, 0.9, 0.9, 1)
-        )
-        comment_btn.bind(on_press=lambda x: self.comment_post(text))
-        actions.add_widget(comment_btn)
-
-        share_btn = Button(
-            text="↗️ Share", size_hint_x=0.34, background_color=(0.9, 0.9, 0.9, 1)
-        )
-        share_btn.bind(on_press=lambda x: self.share_post(text))
-        actions.add_widget(share_btn)
-
-        post_box.add_widget(actions)
-
-        return post_box
-
-    def like_post(self, post_text):
-        """Handle like button"""
-        print(f"Liked post: {post_text[:30]}...")
-
-    def comment_post(self, post_text):
-        """Handle comment button"""
-        print(f"Commenting on: {post_text[:30]}...")
-
-    def share_post(self, post_text):
-        """Handle share button"""
-        print(f"Sharing post: {post_text[:30]}...")
-
-        return post_box
 
     def edit_profile(self, instance):
         """Handle edit profile button press"""
