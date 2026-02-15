@@ -1,4 +1,5 @@
 My First git and kivy dev as team
+
 **Team list**
 - นายคุณัชญ์ ทวีรัตน์ 6810110038
 - นายธีรวัต แซ่น่ำ 6810110163
@@ -25,7 +26,7 @@ My First git and kivy dev as team
    .venv\Scripts\activate     # สำหรับ Windows
 
 2. ติดตั้ง Kivy:
-
+	```bash
 	pip install kivy
 
 3. รันแอป:
