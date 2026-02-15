@@ -32,3 +32,18 @@ My First git and kivy dev as team
 
 	python main.py
 
+**โครงสร้างโปรเจกต์ (สรุป):**
+- [main.py](main.py) : จุดเริ่มต้นของแอป
+- [kv/components.kv](kv/components.kv) : ส่วนประกอบ UI ทั่วไป
+- [kv/feed_screen.kv](kv/feed_screen.kv) : เลย์เอาต์หน้าฟีด
+- [kv/friend_screen.kv](kv/friend_screen.kv) : เลย์เอาต์หน้าเพื่อน
+- [kv/profile_screen.kv](kv/profile_screen.kv) : เลย์เอาต์หน้าโปรไฟล์
+- [screens/feed_screen.py](screens/feed_screen.py) : โลจิกของหน้า Feed
+- [screens/friend_screen.py](screens/friend_screen.py) : โลจิกของหน้า Friends
+- [screens/profile_screen.py](screens/profile_screen.py) : โลจิกของหน้า Profile
+- [Users/user_manager.py](Users/user_manager.py) : จัดการข้อมูลผู้ใช้ (อ่าน/เขียน)
+- [Users/users_data.txt](Users/users_data.txt) : ตัวอย่างข้อมูลผู้ใช้
+- [Users/images/](Users/images/) : ไฟล์รูปภาพตัวอย่าง
+
+
+
