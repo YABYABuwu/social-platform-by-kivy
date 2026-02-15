@@ -106,6 +106,7 @@ class ProfileScreen(Screen):  # คลาสหลักสำหรับหน
 
             # ดึงข้อมูลของผู้ใช้ปัจจุบัน (You)
             current_user_info = raw_data["users"].get("You", {})
+
             self.user_data["posts"] = len(current_user_info.get("posts", []))
             self.user_data["followers"] = current_user_info.get("followers", 0)
 
@@ -237,7 +238,7 @@ class ProfileScreen(Screen):  # คลาสหลักสำหรับหน
 
                     post_widget = PostCard(
                         post_id=str(post.get("id", "")),
-                        username="You",
+                        username="Tae Tae",
                         content=post.get("content", ""),
                         likes=float(post.get("likes", 0)),
                         timestamp=post.get("timestamp", ""),
