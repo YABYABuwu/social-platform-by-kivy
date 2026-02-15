@@ -1,6 +1,26 @@
 <RootLayout>:
     orientation: 'vertical'
 
+    # Top bar with app name
+    BoxLayout:
+        size_hint_y: None
+        height: '50dp'
+        canvas.before:
+            Color:
+                rgba: 0.2, 0.2, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Social Platform'
+            color: 1,1,1,1
+            font_size: '22sp'
+            bold: True
+            halign: 'left'
+            valign: 'middle'
+            text_size: self.size
+            padding_x: 20
+
     ScreenManager:
         id: screen_manager
         # Define which screens exist
@@ -17,7 +37,7 @@
         
         canvas.before:
             Color:
-                rgba: 0.2, 0.2, 0.2, 1 
+                rgba: 0.2, 0.2, 0.2, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -26,8 +46,8 @@
         Button:
             text: 'Home'
             background_normal: ''
-            # Change color if this is the active screen
             background_color: (0, 0.6, 1, 1) if screen_manager.current == 'feed' else (0.3, 0.3, 0.3, 1)
+            color: 1,1,1,1
             on_release: screen_manager.current = 'feed'
 
         # Nav Button 2
@@ -35,6 +55,7 @@
             text: 'Friend'
             background_normal: ''
             background_color: (0, 0.6, 1, 1) if screen_manager.current == 'friend' else (0.3, 0.3, 0.3, 1)
+            color: 1,1,1,1
             on_release: screen_manager.current = 'friend'
 
         # Nav Button 3
@@ -42,4 +63,5 @@
             text: 'Profile'
             background_normal: ''
             background_color: (0, 0.6, 1, 1) if screen_manager.current == 'profile' else (0.3, 0.3, 0.3, 1)
+            color: 1,1,1,1
             on_release: screen_manager.current = 'profile'
