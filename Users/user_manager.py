@@ -64,7 +64,9 @@ class UserManager:
                 data["users"][user_name] = {
                     "id": user_info.get("id", ""),
                     "name": user_name,
-                    "profile_pic": user_info.get("profile_pic", "👤"),
+                    "profile_pic": user_info.get("profile_pic", "👤").replace(
+                        "\\", "/"
+                    ),
                     "bio": user_info.get("bio", ""),
                     "friends": friends,
                     "posts": posts,
@@ -92,7 +94,7 @@ class UserManager:
                 "content": content,
                 "likes": likes,
                 "liked_by": liked_by,
-                "image": image.strip() if image else "",
+                "image": image.strip().replace("\\", "/") if image else "",
             }
         return None
 
@@ -107,7 +109,9 @@ class UserManager:
             lines.append("[USER]")
             lines.append(f"id={user_data.get('id', '')}")
             lines.append(f"name={user_data.get('name', '')}")
-            lines.append(f"profile_pic={user_data.get('profile_pic', '👤')}")
+            lines.append(
+                f"profile_pic={user_data.get('profile_pic', '👤').replace('\\', '/')}"
+            )
             lines.append(f"bio={user_data.get('bio', '')}")
             friends_str = "|".join(user_data.get("friends", []))
             lines.append(f"friends={friends_str}")
@@ -119,7 +123,7 @@ class UserManager:
 
             for post in user_data.get("posts", []):
                 liked_by_str = ",".join(post.get("liked_by", []))
-                image_str = post.get("image", "")
+                image_str = post.get("image", "").replace("\\", "/")
 
                 if image_str:
                     post_line = f"[{post['timestamp']}] {post['content']} |likes:{post['likes']}|liked_by:{liked_by_str}|image:{image_str}"
