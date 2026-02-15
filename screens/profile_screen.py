@@ -73,7 +73,7 @@ class ProfileScreen(Screen):
         self.user_data = {
             "name": "Tae Tae",
             "handle": "@t_ttaexd",
-            "bio": "I'm gayใ",
+            "bio": "I'm gay.",
             "posts": 0,
             "followers": 0,
             "following": 0,
