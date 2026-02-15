@@ -21,7 +21,7 @@ except ImportError:
     from user_manager import UserManager
 
 
-class PostCard(BoxLayout):  # คลาสสำหรับแสดงผลโพสต์แต่ละอันในหน้าโปรไฟล์
+class ProfileCard(BoxLayout):  # คลาสสำหรับแสดงผลโพสต์แต่ละอันในหน้าโปรไฟล์
     username = StringProperty()
     content = StringProperty()
     likes = NumericProperty(0)
@@ -234,7 +234,7 @@ class ProfileScreen(Screen):  # คลาสหลักสำหรับหน
                     if post_image and not os.path.exists(post_image):
                         post_image = ""
 
-                    post_widget = PostCard(
+                    post_widget = ProfileCard(
                         post_id=str(post.get("id", "")),
                         username="Tae Tae",
                         content=post.get("content", ""),

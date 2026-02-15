@@ -10,8 +10,8 @@ friends=Test Friend|James Bond|Peter Parker|John Doe|Sarah Connor|Lara Croft
 [/USER]
 
 [POSTS_YOU]
-[2026-02-13 17:17] Amazing sunset! 🌅 |likes:0|liked_by:
-[2024-02-13 10:30] Just launched my new social platform project! Excited to share it with everyone 🚀 |likes:42|liked_by:John Doe,Sarah Connor|image:Users/images/project_screenshot.png
+[2026-02-13 17:17] Amazing sunset! 🌅 |likes:0|liked_by
+[2026-02-13 10:30] Just launched my new social platform project! Excited to share it with everyone 🚀 |likes:42|liked_by:John Doe,Sarah Connor|image:Users/images/project_screenshot.png
 [2024-02-12 15:45] Beautiful sunset at the beach today 🌅 |likes:28|liked_by:James Bond|image:Users/images/sunset.png
 [2024-02-11 09:15] Working on something cool with Kivy framework! |likes:15|liked_by:
 [/POSTS_YOU]
